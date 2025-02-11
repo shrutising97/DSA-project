@@ -1,36 +1,45 @@
 # DSA-project
-text autocomplete system
-import nltk
-import random
-from nltk.util import ngrams
-from collections import defaultdict
+text autocomplete system  
+#source code:
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
 
-nltk.download('punkt')
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
-class TextAutocomplete:
-    def __init__(self, corpus, n=3):
-        self.n = n  # N-gram size
-        self.model = defaultdict(list)
-        self._train_model(corpus)
+    def insert(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
 
-    def _train_model(self, corpus):
-        tokens = nltk.word_tokenize(corpus.lower())
-        n_grams = list(ngrams(tokens, self.n, pad_left=True, pad_right=True))
-        
-        for gram in n_grams:
-            prefix, next_word = tuple(gram[:-1]), gram[-1]
-            self.model[prefix].append(next_word)
+    def search(self, prefix):
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return []
+            node = node.children[char]
+        return self._get_all_words(node, prefix)
 
-    def predict(self, text):
-        tokens = nltk.word_tokenize(text.lower())
-        prefix = tuple(tokens[-(self.n-1):])
-        predictions = self.model.get(prefix, [])
-        return random.choice(predictions) if predictions else "No suggestion"
+    def _get_all_words(self, node, prefix):
+        words = []
+        if node.is_end_of_word:
+            words.append(prefix)
+        for char, child_node in node.children.items():
+            words.extend(self._get_all_words(child_node, prefix + char))
+        return words
 
-# Example Corpus
-corpus = "Hello, how are you? I am fine. How about you? I hope you are doing well."
-autocomplete = TextAutocomplete(corpus, n=2)
+# Example Usage
+trie = Trie()
+words = ["shruti", "shristi", "sharmila", "sheela", "shriniwas"]
+for word in words:
+    trie.insert(word)
 
-# Predict next word
-input_text = "how are"
-print(f"Suggested word: {autocomplete.predict(input_text)}")
+prefix = "sh"
+suggestions = trie.search(prefix)
+print(f"Suggestions for '{prefix}': {suggestions}")
