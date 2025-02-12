@@ -1,5 +1,45 @@
 # DSA-project
 text autocomplete system  
+
+#pseudocode:
+Algorithm: Text Autocomplete System
+
+1. Preprocess Dataset:
+   - Load dataset from file.
+   - Tokenize into words.
+   - Clean words (lowercase, remove punctuation).
+   - Store cleaned words in a list.
+
+2. Build Trie:
+   - Initialize Trie with root node.
+   - For each word in the dataset:
+     - Insert word into Trie.
+
+3. Autocomplete:
+   - While True:
+     - Prompt user for prefix.
+     - If prefix == "exit":
+       - Break loop.
+     - Else:
+       - Search Trie for prefix.
+       - Display suggestions.
+
+4. Search Trie:
+   - Start at root node.
+   - For each character in prefix:
+     - If character not in current node's children:
+       - Return empty list.
+     - Move to child node.
+   - Use helper function to collect all words starting from current node.
+
+5. Helper Function (Find All Words):
+   - If current node marks end of word:
+     - Add word to result list.
+   - For each child node:
+     - Recursively find all words starting from child node.
+   - Return result list
+   - 
+
 #source code:
 class TrieNode:
     def __init__(self):
