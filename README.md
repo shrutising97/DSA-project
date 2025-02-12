@@ -2,6 +2,7 @@
 text autocomplete system  
 
 #pseudocode:
+
 Algorithm: Text Autocomplete System
 
 1. Preprocess Dataset:
